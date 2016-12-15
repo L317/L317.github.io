@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#myCanvas {
+				box-shadow: 0 0 10px gray;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="myCanvas" width="500" height="500"></canvas>
+	</body>
+	<script type="text/javascript">
+		var canvas = document.getElementById("myCanvas");
+		var context = canvas.getContext("2d");
+		var deg = Math.PI / 180;
+		context.save();
+		function clock() {
+			context.clearRect(0,0,canvas.width,canvas.height);
+			context.beginPath();
+			context.arc(250, 250, 250, 0, 360 * deg);
+			context.strokeStyle = "greenyellow";
+			context.fillStyle = "orange";
+			context.fill();
+			context.stroke();
+			//移动旋转中心
+			context.translate(250, 250);
+			context.font = "33px 微软雅黑";
+			context.fillStyle = "greenyellow";
+			context.textAlign = "center";
+			context.textBaseline = "middle";
+			for(var i = 1; i < 13; i++) {
+				var theta = (i - 3) * (Math.PI * 2) / 12;
+				var x = 250 * 0.7 * Math.cos(theta);
+				var y = 250 * 0.7 * Math.sin(theta);
+				context.fillText(i, x, y);
+			}
+			context.rotate(-90*deg);
+			//时钟刻度
+//			context.save(); //保存坐标系未旋转的状态
+			for(var i = 0; i <= 60; i++) {
+				
+				context.save(); //save的次数大于等于restore的次数
+				context.rotate(6 * i * deg);
+				context.beginPath();
+				context.lineWidth = 10;
+				context.lineCap = "round";
+				if(i % 5 == 0) {
+					context.moveTo(200, 0);
+					context.lineTo(240, 0);
+				} else {
+					context.moveTo(230, 0);
+					context.lineTo(240, 0);
+				}
+				context.stroke();
+				context.restore(); //在每次旋转之前恢复save保存的状态
+			}
+			//时钟数字
+			
+			var nowTime = new Date();
+			var hours = nowTime.getHours();
+			var minutes = nowTime.getMinutes();
+			var seconds = nowTime.getSeconds();
+			//时针
+			context.save();
+			var hdeg = (hours+minutes/60)*30*deg;
+			context.rotate(hdeg);
+			context.beginPath();
+			context.lineWidth = 10;
+			context.lineCap = "round";
+			context.moveTo(-10, 0);
+			context.lineTo(110, 0);
+			context.stroke();
+			context.restore();
+			//分针
+			context.save();
+			var mdeg = (minutes+seconds/60)*6*deg;
+			context.rotate(mdeg);
+			context.beginPath();
+			context.lineWidth = 6;
+			context.lineCap = "round";
+			context.moveTo(-10, 0);
+			context.lineTo(139, 0);
+			context.strokeStyle = "olivedrab";
+			context.stroke();
+			context.restore();
+			//秒针
+			var sdeg = seconds*6*deg;
+			context.rotate(sdeg);
+			context.beginPath();
+			context.lineWidth = 3;
+			context.lineCap = "round";
+			context.moveTo(-10, 0);
+			context.lineTo(160, 0);
+			context.strokeStyle = "red";
+			context.stroke();
+			
+			
+			context.restore();	
+//			context.restore();
+			context.save();
+		}
+		clock();
+		setInterval(clock,1000);
+	</script>
+
+</html>
